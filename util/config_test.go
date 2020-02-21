@@ -15,8 +15,8 @@ func TestInitConfig(t *testing.T) {
 	conf := new(config)
 	if err := InitConfig(conf, "./config.yml"); err != nil {
 		t.Fatal(err)
-	} else {
-		t.Logf("config: %s, %s", conf.App.Name, conf.App.Mode)
 	}
-
+	if conf.App.Name != "go-common" || conf.App.Mode != "release" {
+		t.Fatal("conf read failed")
+	}
 }
