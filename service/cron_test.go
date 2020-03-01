@@ -69,7 +69,7 @@ func TestCronServiceImpl_SetTaskSchedule(t *testing.T) {
 	fmt.Printf("task1 Id: %s\n", id)
 	select {
 	case <-time.After(Ten):
-		_ = srv.SetTaskSchedule(id, "* * * * *") // 分 时 日 月 星期
+		_ = srv.SetTaskSchedule(id, "* * * * *")
 		fmt.Println("set schedule")
 	}
 	select {
@@ -93,7 +93,7 @@ func TestCronServiceImpl_AddTask2(t *testing.T) {
 	ch := make(chan string, 1)
 	go func() {
 		for i := 0; i < 20; i++ {
-			name := fmt.Sprintf("【TASK%d】", i)
+			name := fmt.Sprintf("锟斤拷TASK%d锟斤拷", i)
 			id, _ := srv.AddTask(NewMockTask(name, "@every 2s"))
 			fmt.Printf("%s added: %s\n", name, id)
 			if i == 10 {

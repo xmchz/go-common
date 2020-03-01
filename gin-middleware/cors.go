@@ -20,4 +20,4 @@ func Cors() gin.HandlerFunc {
 	}
 }
 
-// todo panic »Ö¸´
+// todo panic
