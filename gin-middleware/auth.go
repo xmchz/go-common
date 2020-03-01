@@ -7,11 +7,14 @@ import (
 	"github.com/xmchz/go-common/util"
 )
 
+var CurrentSubjectKey = "current_subject"
+
 func Authenticate(helper security.AuthHelper) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if _, err := helper.GetSubject(c.Request); err != nil {
+		if subject, err := helper.GetSubject(c.Request); err != nil {
 			c.AbortWithStatusJSON(401, util.BaseResp{Message: "need authentication"})
 		} else {
+			c.Set(CurrentSubjectKey, subject)
 			c.Next()
 		}
 	}
