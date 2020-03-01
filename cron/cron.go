@@ -1,4 +1,4 @@
-package common
+package cron
 
 import (
 	"errors"

@@ -1,4 +1,4 @@
-package util
+package cache
 
 import (
 	"errors"
@@ -6,14 +6,6 @@ import (
 	"github.com/allegro/bigcache"
 	"time"
 )
-
-type Cache interface {
-	Get(key string) ([]byte, error)
-	Set(key string, entry []byte) error
-	GetAll() (map[string][]byte, error)
-	Delete(key string) error
-	FindValue(value string) (string, error)
-}
 
 func NewBigCache(eviction time.Duration) (*BigCache, error) {
 	var err error
@@ -52,6 +44,4 @@ func (c *BigCache) FindValue(value string) (string, error) {
 	}
 	return "", errors.New("cache value not found")
 }
-
-
 

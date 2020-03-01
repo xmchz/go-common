@@ -3,31 +3,28 @@ package gin_middleware
 import (
 	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
-	"github.com/xmchz/go-common/gin-util"
+	"github.com/xmchz/go-common/security"
 	"github.com/xmchz/go-common/util"
 )
 
-func Authenticate(helper gin_util.AuthHelper) gin.HandlerFunc {
-
+func Authenticate(helper security.AuthHelper) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if sub, err := helper.GetSubject(c); err != nil {
-			c.AbortWithStatusJSON(401, util.BaseResp{Message: "user hasn't logged in yet"})
+		if _, err := helper.GetSubject(c.Request); err != nil {
+			c.AbortWithStatusJSON(401, util.BaseResp{Message: "need authentication"})
 		} else {
-			_ = helper.SaveSubject(c, sub) // save sub in context, and refresh sub in cache
 			c.Next()
 		}
 	}
 }
 
-func Authorize(e *casbin.Enforcer, helper gin_util.AuthHelper) gin.HandlerFunc {
-
+func Authorize(e *casbin.Enforcer, helper security.AuthHelper) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		sub, _ := helper.GetSubject(c)
-		obj, _ := helper.GetObject(c)
-		act, _ := helper.GetAction(c)
+		sub, _ := helper.GetSubject(c.Request)
+		obj, _ := helper.GetObject(c.Request)
+		act, _ := helper.GetAction(c.Request)
 		ok, err := e.Enforce(sub, obj, act)
 		if err != nil {
-			c.AbortWithStatusJSON(500, util.BaseResp{Message: "error occurred when authorizing user"})
+			c.AbortWithStatusJSON(500, util.BaseResp{Message: "error occurred when authorizing"})
 			return
 		}
 		if !ok {
