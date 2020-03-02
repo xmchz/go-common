@@ -17,6 +17,7 @@ type AuthHelper interface {
 	GetObject(*http.Request) (string, error)  // get obj (url) from request
 	GetAction(*http.Request) (string, error)  // get act (method) from request
 	SaveSubject(string) (string, error)  // save sub, return token
+	DeleteSubject(string)
 }
 
 func NewDefaultAuthHelper(cache cache.Cache) *DefaultAuthHelper {
@@ -57,4 +58,10 @@ func (helper *DefaultAuthHelper) SaveSubject(sub string) (string, error) {
 		token = u.String()
 	}
 	return token, helper.repo.Set(token, []byte(sub))
+}
+
+func (helper *DefaultAuthHelper) DeleteSubject(username string) {
+	if key, err := helper.repo.FindValue(username); err == nil {
+		_ = helper.repo.Delete(key)
+	}
 }
