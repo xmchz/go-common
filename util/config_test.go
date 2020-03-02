@@ -1,6 +1,8 @@
 package util
 
-import "testing"
+import (
+	"testing"
+)
 
 type config struct {
 	App *appConfig
@@ -13,10 +15,10 @@ type appConfig struct {
 
 func TestInitConfig(t *testing.T) {
 	conf := new(config)
-	if err := InitConfig(conf, "./config.yml"); err != nil {
+	if err := InitConfig(conf, "../config.yml"); err != nil {
 		t.Fatal(err)
 	}
-	if conf.App.Name != "go-common" || conf.App.Mode != "release" {
+	if conf.App.Name != "go-common" || conf.App.Mode != "dev" {
 		t.Fatal("conf read failed")
 	}
 }
