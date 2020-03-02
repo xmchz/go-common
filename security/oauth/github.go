@@ -19,7 +19,7 @@ type GithubUserInfoResp struct {
 	AvatarUrl string `json:"avatar_url"`
 }
 
-func RequestGithubToken(tokenUrl, clientId, clientSecret, authCode string) (string, error){
+func RequestGithubToken(tokenUrl, clientId, clientSecret, authCode string) (*GithubTokenResp, error){
 	postValue := url.Values{
 		"client_id":     []string{clientId},
 		"client_secret": []string{clientSecret},
@@ -28,26 +28,26 @@ func RequestGithubToken(tokenUrl, clientId, clientSecret, authCode string) (stri
 	postStr := postValue.Encode()
 	tokenRequest, err := http.NewRequest("POST", tokenUrl, strings.NewReader(postStr))
 	if err != nil {
-		return "", fmt.Errorf("new tokenRequest err: %s", err.Error())
+		return nil, fmt.Errorf("new tokenRequest err: %s", err.Error())
 	}
 	tokenRequest.Header.Set("Accept", "application/json")
 	resp, err := http.DefaultClient.Do(tokenRequest)
 	if err != nil {
-		return "", fmt.Errorf("do tokenRequest err: %s", err.Error())
+		return nil, fmt.Errorf("do tokenRequest err: %s", err.Error())
 
 	}
 	gTokenResp := new(GithubTokenResp)
 	if err := util.GetBodyAsStruct(resp, gTokenResp); err != nil {
-		return "", fmt.Errorf("read token resp body err: %s", err.Error())
+		return nil, fmt.Errorf("read token resp body err: %s", err.Error())
 	}
-	return gTokenResp.AccessToken, nil
+	return gTokenResp, nil
 }
 
 
-func RequestGithubUserInfo(userInfoUrl, token, tokenType string) (GithubUserInfoResp, error){
+func RequestGithubUserInfo(userInfoUrl, token, tokenType string) (*GithubUserInfoResp, error){
 	userInfoRequest, err := http.NewRequest("GET", userInfoUrl, nil)
 	if err != nil {
-		return GithubUserInfoResp{}, fmt.Errorf("new userInfoRequest err: %s", err.Error())
+		return nil, fmt.Errorf("new userInfoRequest err: %s", err.Error())
 
 	}
 	userInfoRequest.Header.Add("Authorization",	fmt.Sprintf("%s %s", tokenType, token))
@@ -55,7 +55,7 @@ func RequestGithubUserInfo(userInfoUrl, token, tokenType string) (GithubUserInfo
 
 	gUserInfoResp := new(GithubUserInfoResp)
 	if err = util.GetBodyAsStruct(resp, gUserInfoResp); err!= nil {
-		return GithubUserInfoResp{}, fmt.Errorf("read user info resp body err: %s", err.Error())
+		return nil, fmt.Errorf("read user info resp body err: %s", err.Error())
 	}
-	return *gUserInfoResp, nil
+	return gUserInfoResp, nil
 }
