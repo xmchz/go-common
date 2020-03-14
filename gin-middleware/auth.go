@@ -20,6 +20,7 @@ func Authenticate(helper security.AuthHelper) gin.HandlerFunc {
 	}
 }
 
+// todo: add e to helper
 func Authorize(e *casbin.Enforcer, helper security.AuthHelper) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		sub, _ := helper.GetSubject(c.Request)

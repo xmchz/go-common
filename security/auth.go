@@ -12,6 +12,10 @@ var (
 	Token = "token"
 )
 
+/*
+authentication and authorization helper
+todo add Enforcer func
+ */
 type AuthHelper interface {
 	GetSubject(*http.Request) (string, error) // get sub (username) from request
 	GetObject(*http.Request) (string, error)  // get obj (url) from request
@@ -25,7 +29,7 @@ func NewDefaultAuthHelper(cache cache.Cache) *DefaultAuthHelper {
 }
 
 type DefaultAuthHelper struct {
-	repo cache.Cache
+	repo cache.Cache  // delegate subject persist to cache
 }
 
 func (helper *DefaultAuthHelper) GetSubject(req *http.Request) (string, error) {
