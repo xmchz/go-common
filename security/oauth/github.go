@@ -54,5 +54,8 @@ func RequestGithubUserInfo(userInfoUrl, token, tokenType string) (*GithubUserInf
 	if err = util.GetBodyAsStruct(resp, gUserInfoResp); err!= nil {
 		return nil, fmt.Errorf("read user info resp body err: %s", err.Error())
 	}
+	if gUserInfoResp.Username == "" {
+		return nil, fmt.Errorf("request github user info err")
+	}
 	return gUserInfoResp, nil
 }
